@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nycolas Gabriel | Mecânica, Vôlei & Magia</title>
+  
+  <!-- Importando Tailwind CSS para estilização moderna e responsiva -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Importando Google Fonts: Inter (moderna) e Cinzel (toque mágico sutil) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Importando ícones Lucide para visual limpo e técnico -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Configuração customizada do Tailwind -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            magic: ['Cinzel', 'serif'],
+          },
+          colors: {
+            senai: {
+              red: '#E30613',
+              blue: '#004B87',
+            },
+            hogwarts: {
+              gold: '#D4AF37',
+              crimson: '#740001',
+              emerald: '#1A472A',
+              sapphire: '#0E1A40',
+              amber: '#ECB939'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-500 font-sans antialiased selection:bg-amber-400 selection:text-slate-900 overflow-x-hidden">
+
+  <!-- ===================================================================== -->
+  <!-- NOTIFICAÇÃO FLUTUANTE (Substitui o alert() padrão do navegador)       -->
+  <!-- ===================================================================== -->
+  <div id="magic-toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none max-w-sm w-full px-4 sm:px-0">
+    <div class="bg-slate-900 dark:bg-slate-800 text-white border border-amber-400/50 rounded-2xl p-4 shadow-2xl flex items-start gap-3">
+      <div class="p-2 bg-amber-400/20 text-amber-400 rounded-xl shrink-0">
+        <i data-lucide="sparkles" class="w-5 h-5"></i>
+      </div>
+      <div>
+        <h4 id="toast-title" class="font-bold text-sm text-amber-300">Feitiço Ativado!</h4>
+        <p id="toast-message" class="text-xs text-slate-300 mt-0.5 leading-relaxed">Mensagem aqui.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- BARRA DE NAVEGAÇÃO SUPERIOR (FIXA E RESPONSIVA)                       -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-white/80 dark:bg-slate-950/80 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-500">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo / Iniciais com Engrenagem -->
+        <a href="#inicio" class="flex items-center gap-2.5 group">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-amber-500 dark:to-amber-600 flex items-center justify-center text-white dark:text-slate-950 font-bold shadow-md group-hover:rotate-12 transition-transform">
+            <i data-lucide="cog" class="w-5 h-5 animate-[spin_10s_linear_infinite]"></i>
+          </div>
+          <div>
+            <span class="font-extrabold text-lg tracking-tight block leading-none">Nycolas<span class="text-blue-600 dark:text-amber-400">.dev</span></span>
+            <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Mecânica & Criatividade</span>
+          </div>
+        </a>
+
+        <!-- Links de Navegação (Desktop) -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium">
+          <a href="#sobre" class="text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Sobre Mim</a>
+          <a href="#formacao" class="text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Formação SENAI</a>
+          <a href="#interesses" class="text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Hobbies & Magia</a>
+          <a href="#contato" class="text-slate-600 hover:text-blue-600 dark:text-slate-300 dark:hover:text-amber-400 transition-colors">Contato</a>
+        </nav>
+
+        <!-- Botões de Ação (Feitiço Lumos/Nox + Menu Mobile) -->
+        <div class="flex items-center gap-2">
+          <!-- Botão Temático Harry Potter para alternar Tema Claro/Escuro -->
+          <button id="theme-toggle" onclick="alternarTemaMagico()" class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-amber-300 border border-slate-200 dark:border-amber-500/30 transition-all shadow-sm active:scale-95" title="Alternar iluminação com magia">
+            <i id="theme-icon" data-lucide="moon" class="w-4 h-4 text-indigo-600 dark:text-amber-400"></i>
+            <span id="theme-label">Nox</span>
+          </button>
+
+          <!-- Botão Menu Hambúrguer (Mobile) -->
+          <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" aria-label="Abrir menu">
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Dropdown Mobile -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 pt-3 pb-5 space-y-2">
+      <a href="#sobre" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900">Sobre Mim</a>
+      <a href="#formacao" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900">Formação SENAI</a>
+      <a href="#interesses" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900">Hobbies & Magia</a>
+      <a href="#contato" onclick="toggleMobileMenu()" class="block px-3 py-2.5 rounded-xl text-base font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900">Contato</a>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- SEÇÃO 1: HERO / APRESENTAÇÃO PRINCIPAL                                -->
+  <!-- ===================================================================== -->
+  <section id="inicio" class="relative pt-12 pb-20 sm:pt-20 sm:pb-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <!-- Elementos decorativos de fundo -->
+    <div class="absolute top-10 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-blue-500/10 dark:bg-amber-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+      
+      <!-- Coluna de Texto -->
+      <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 dark:bg-amber-500/10 border border-blue-200 dark:border-amber-500/30 text-blue-700 dark:text-amber-300 text-xs font-semibold tracking-wide">
+          <span class="w-2 h-2 rounded-full bg-blue-600 dark:bg-amber-400 animate-pulse"></span>
+          16 anos • Estudante de Técnico em Mecânica (SENAI)
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+          Olá, eu sou <br class="hidden sm:block" />
+          <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 dark:from-amber-300 dark:via-yellow-400 dark:to-amber-500 bg-clip-text text-transparent">
+            Nycolas Gabriel Macedo Gama
+          </span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+          Unindo a precisão das engrenagens da <strong>Engenharia Mecânica</strong>, a energia das quadras de <strong>Vôlei</strong> e a criatividade do universo de <strong>Harry Potter</strong>. Sempre pronto para aprender, construir e compartilhar bons momentos com meus amigos.
+        </p>
+
+        <!-- Botões de Ação -->
+        <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
+          <a href="#formacao" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 font-bold text-sm shadow-lg shadow-blue-600/20 dark:shadow-amber-500/20 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="wrench" class="w-4 h-4"></i>
+            Minha Trajetória no SENAI
+          </a>
+          <button onclick="ativarPomoDeOuro()" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold text-sm border border-slate-200 dark:border-slate-700 transition-all flex items-center justify-center gap-2 group">
+            <i data-lucide="wand-2" class="w-4 h-4 text-amber-500 group-hover:rotate-12 transition-transform"></i>
+            Toque de Magia
+          </button>
+        </div>
+      </div>
+
+      <!-- Coluna Visual / Cartão de Perfil Estilizado -->
+      <div class="lg:col-span-5 flex justify-center">
+        <div class="relative w-full max-w-sm">
+          <!-- Moldura decorativa -->
+          <div class="absolute -inset-1 bg-gradient-to-tr from-blue-600 to-cyan-400 dark:from-amber-500 dark:to-purple-600 rounded-3xl blur opacity-30"></div>
+          
+          <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+            <!-- Cabeçalho do Cartão -->
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Ficha Técnica & Pessoal</span>
+              <!-- Easter Egg: Pomo de Ouro clicável -->
+              <button onclick="ativarPomoDeOuro()" title="Clique no Pomo de Ouro!" class="p-2 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:scale-110 transition-transform cursor-pointer">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+              </button>
+            </div>
+
+            <!-- Avatar Ilustrado SVG (Sem imagens externas quebradas) -->
+            <div class="flex flex-col items-center text-center py-2">
+              <div class="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-800 dark:from-slate-800 dark:to-slate-950 border-2 border-blue-200 dark:border-amber-400/50 flex items-center justify-center shadow-inner mb-4 relative">
+                <span class="text-3xl font-extrabold text-white dark:text-amber-400 tracking-wider">NG</span>
+                <div class="absolute -bottom-2 -right-2 bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full border-2 border-white dark:border-slate-900">
+                  16 ANOS
+                </div>
+              </div>
+              <h2 class="font-bold text-lg text-slate-900 dark:text-white">Nycolas Gabriel M. Gama</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Futuro Técnico em Mecânica • SENAI</p>
+            </div>
+
+            <!-- Mini Status / Badges -->
+            <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-center">
+              <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
+                <span class="block text-lg font-extrabold text-blue-600 dark:text-amber-400">4</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Cursos SENAI</span>
+              </div>
+              <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
+                <span class="block text-lg font-extrabold text-emerald-600 dark:text-emerald-400">Vôlei</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Esporte Fav.</span>
+              </div>
+              <div class="p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60">
+                <span class="block text-lg font-extrabold text-purple-600 dark:text-purple-400 font-magic">HP</span>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Potterhead</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SEÇÃO 2: SOBRE MIM                                                    -->
+  <!-- ===================================================================== -->
+  <section id="sobre" class="py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900/50 border-y border-slate-200/70 dark:border-slate-800/70">
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+      <div class="inline-flex items-center gap-2 text-blue-600 dark:text-amber-400 font-bold text-xs uppercase tracking-widest">
+        <i data-lucide="user" class="w-4 h-4"></i>
+        Quem Sou Eu
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Curiosidade técnica dentro e fora da oficina</h2>
+      <p class="text-slate-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
+        Tenho <strong>16 anos</strong> e sou apaixonado por entender como as coisas funcionam na prática. No <strong>SENAI</strong>, encontrei o ambiente ideal para desenvolver meu raciocínio lógico e técnico na área de <strong>Mecânica</strong>. Fora dos estudos, acredito que o equilíbrio vem das quadras de <strong>vôlei</strong>, das boas risadas saindo com os <strong>amigos</strong> e de mergulhar em boas histórias fantásticas como <strong>Harry Potter</strong>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SEÇÃO 3: FORMAÇÃO NO SENAI (COM EDIÇÃO INTERATIVA DOS 3 CURSOS)       -->
+  <!-- ===================================================================== -->
+  <section id="formacao" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto space-y-12">
+      
+      <!-- Cabeçalho da Seção -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 text-blue-600 dark:text-amber-400 font-bold text-xs uppercase tracking-widest mb-2">
+            <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+            Qualificação Profissional
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Minha Jornada no SENAI</h2>
+        </div>
+        <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md">
+          Dica: Clique no botão <strong>"Editar nome"</strong> nos cursos concluídos abaixo para personalizar com os títulos exatos dos seus certificados!
+        </p>
+      </div>
+
+      <!-- Destaque: Curso Técnico Atual -->
+      <div class="relative rounded-3xl bg-gradient-to-r from-blue-700 to-indigo-800 dark:from-slate-900 dark:to-slate-800 p-6 sm:p-8 text-white shadow-xl border border-blue-500/30 dark:border-amber-500/30 overflow-hidden">
+        <div class="absolute right-4 bottom-4 opacity-10 pointer-events-none">
+          <i data-lucide="settings" class="w-40 h-40"></i>
+        </div>
+        
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-sm text-xs font-bold text-cyan-200 dark:text-amber-300">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              Cursando Atualmente
+            </span>
+            <h3 class="text-2xl sm:text-3xl font-extrabold">Técnico em Mecânica — SENAI</h3>
+            <p class="text-blue-100 dark:text-slate-300 text-sm sm:text-base max-w-2xl">
+              Desenvolvimento de competências em processos de fabricação, metrologia, desenho técnico mecânico, manutenção industrial, automação e projetos mecânicos.
+            </p>
+          </div>
+          <div class="shrink-0">
+            <div class="px-5 py-3 rounded-2xl bg-white/10 border border-white/20 text-center">
+              <span class="block text-xs uppercase tracking-wider text-blue-200 dark:text-slate-400">Instituição</span>
+              <span class="font-extrabold text-xl tracking-wide">SENAI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grid dos 3 Cursos Adicionais Concluídos no SENAI (Editáveis pelo Nycolas) -->
+      <div>
+        <h3 class="text-lg font-bold mb-5 flex items-center gap-2">
+          <i data-lucide="award" class="w-5 h-5 text-blue-600 dark:text-amber-400"></i>
+          3 Cursos Concluídos no SENAI
+        </h3>
+
+        <div id="cursos-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Os cartões são renderizados dinamicamente pelo JavaScript para permitir edição fácil -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SEÇÃO 4: INTERESSES, HOBBIES & UNIVERSO HARRY POTTER                  -->
+  <!-- ===================================================================== -->
+  <section id="interesses" class="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900/50 border-t border-slate-200/70 dark:border-slate-800/70">
+    <div class="max-w-6xl mx-auto space-y-12">
+      
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <div class="inline-flex items-center gap-2 text-blue-600 dark:text-amber-400 font-bold text-xs uppercase tracking-widest">
+          <i data-lucide="heart" class="w-4 h-4"></i>
+          Estilo de Vida
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">O que me move fora da sala de aula</h2>
+        <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base">
+          Esporte, amizades verdadeiras e um pouco de magia para deixar a rotina mais leve.
+        </p>
+      </div>
+
+      <!-- Grid de 3 Cartões de Interesses -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Card 1: Vôlei -->
+        <div class="rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-7 flex flex-col justify-between hover:shadow-lg transition-all group">
+          <div class="space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i data-lucide="trophy" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold">Vôlei & Trabalho em Equipe</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Jogar vôlei é onde libero energia e treino foco, reflexo rápido e comunicação. Assim como na mecânica, cada jogador tem uma função essencial para o time vencer.
+            </p>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-200/70 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+            <span>Saque • Manchete • Cortada</span>
+            <button onclick="mostrarMensagem('Ponto de Ace! 🏐', 'Nada supera um bom jogo de vôlei em equipe!')" class="underline hover:no-underline cursor-pointer">Dar um toque</button>
+          </div>
+        </div>
+
+        <!-- Card 2: Sair com os Amigos -->
+        <div class="rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-7 flex flex-col justify-between hover:shadow-lg transition-all group">
+          <div class="space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-500/15 text-sky-600 dark:text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i data-lucide="users" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold">Rolês com os Amigos</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Valorizo muito as amizades. Sair com a galera, resenhar, jogar conversa fora e criar memórias boas é fundamental para recarregar as energias da semana.
+            </p>
+          </div>
+          <div class="pt-6 mt-6 border-t border-slate-200/70 dark:border-slate-800 flex items-center justify-between text-xs font-semibold text-sky-600 dark:text-sky-400">
+            <span>Resenha • Parceria • Diversão</span>
+            <button onclick="mostrarMensagem('Tropa Reunida! 🙌', 'Os melhores momentos são sempre ao lado de bons amigos.')" class="underline hover:no-underline cursor-pointer">Mandar salve</button>
+          </div>
+        </div>
+
+        <!-- Card 3: Harry Potter (Interativo com Seletor de Casas de Hogwarts) -->
+        <div id="hp-card" class="rounded-3xl bg-gradient-to-b from-amber-50/80 to-slate-50 dark:from-slate-900 dark:to-slate-950 border-2 border-amber-300/70 dark:border-amber-500/40 p-7 flex flex-col justify-between shadow-md transition-all">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                <i data-lucide="sparkles" class="w-6 h-6"></i>
+              </div>
+              <span class="font-magic text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-200/60 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300">
+                Mundo Bruxo
+              </span>
+            </div>
+            
+            <h3 class="text-xl font-bold font-magic tracking-wide">Fã de Harry Potter</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+              Do Expresso de Hogwarts às batalhas épicas, sou fã da saga. Escolha abaixo uma Casa de Hogwarts para personalizar este cartão:
+            </p>
+
+            <!-- Seletor Interativo de Casas de Hogwarts -->
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="selecionarCasa('Grifinória')" class="px-3 py-2 rounded-xl text-xs font-bold bg-red-900/10 hover:bg-red-900/20 text-red-800 dark:bg-red-500/20 dark:text-red-300 border border-red-700/20 transition-colors">
+                🦁 Grifinória
+              </button>
+              <button onclick="selecionarCasa('Sonserina')" class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-900/10 hover:bg-emerald-900/20 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-700/20 transition-colors">
+                🐍 Sonserina
+              </button>
+              <button onclick="selecionarCasa('Corvinal')" class="px-3 py-2 rounded-xl text-xs font-bold bg-blue-900/10 hover:bg-blue-900/20 text-blue-800 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-700/20 transition-colors">
+                🦅 Corvinal
+              </button>
+              <button onclick="selecionarCasa('Lufa-Lufa')" class="px-3 py-2 rounded-xl text-xs font-bold bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 dark:bg-amber-400/20 dark:text-amber-300 border border-amber-600/20 transition-colors">
+                🦡 Lufa-Lufa
+              </button>
+            </div>
+          </div>
+
+          <div class="pt-4 mt-5 border-t border-amber-200/60 dark:border-slate-800 text-xs">
+            <span class="text-slate-500 dark:text-slate-400">Casa selecionada: </span>
+            <strong id="casa-atual" class="text-amber-700 dark:text-amber-400 font-magic">Grifinória</strong>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SEÇÃO 5: CONTATO & RODAPÉ                                             -->
+  <!-- ===================================================================== -->
+  <footer id="contato" class="py-14 px-4 sm:px-6 lg:px-8 border-t border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-950">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+      
+      <div class="text-center md:text-left space-y-2">
+        <h3 class="text-xl font-extrabold">Nycolas Gabriel Macedo Gama</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400">
+          16 anos • Técnico em Mecânica (SENAI) • Vôlei & Harry Potter
+        </p>
+      </div>
+
+      <!-- Botões Sociais / Contato Rápido -->
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <button onclick="copiarContato('nycolas.gabriel@exemplo.com')" class="px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold flex items-center gap-2 transition-all shadow-sm">
+          <i data-lucide="mail" class="w-4 h-4 text-blue-600 dark:text-amber-400"></i>
+          Copiar E-mail
+        </button>
+        <a href="#inicio" class="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950 text-sm font-bold flex items-center gap-2 transition-all shadow-sm">
+          <i data-lucide="arrow-up" class="w-4 h-4"></i>
+          Voltar ao Topo
+        </a>
+      </div>
+    </div>
+
+    <div class="max-w-5xl mx-auto mt-10 pt-6 border-t border-slate-200/80 dark:border-slate-800/80 text-center text-xs text-slate-400">
+      <p>Desenvolvido com HTML, Tailwind CSS e JavaScript • <em>"Malfeito feito!"</em> ⚡</p>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- MODAL INTERATIVO PARA EDITAR OS 3 CURSOS DO SENAI                     -->
+  <!-- ===================================================================== -->
+  <div id="modal-editar-curso" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold">Editar Curso do SENAI</h3>
+        <button onclick="fecharModalCurso()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nome do Curso Concluído</label>
+          <input id="input-curso-titulo" type="text" placeholder="Ex: Desenho Técnico Mecânico" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-amber-400" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Resumo / O que aprendeu</label>
+          <textarea id="input-curso-desc" rows="3" placeholder="Ex: Leitura e interpretação de projetos mecânicos e normas técnicas." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-amber-400"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="fecharModalCurso()" class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Cancelar</button>
+        <button onclick="salvarCursoEditado()" class="px-5 py-2 rounded-xl text-sm font-bold bg-blue-600 hover:bg-blue-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-slate-950">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT: LÓGICA DE INTERATIVIDADE, TEMA MÁGICO E CURSOS            -->
+  <!-- ===================================================================== -->
+  <script>
+    // 1. Inicializa os ícones Lucide na página
+    lucide.createIcons();
+
+    // 2. Dados dos 3 cursos concluídos no SENAI (Salvos no navegador via localStorage)
+    const cursosPadrao = [
+      {
+        id: 1,
+        titulo: "Curso SENAI #1 (Clique para editar)",
+        descricao: "Formação complementar concluída no SENAI com foco em fundamentos técnicos e prática profissional.",
+        tag: "Certificado SENAI"
+      },
+      {
+        id: 2,
+        titulo: "Curso SENAI #2 (Clique para editar)",
+        descricao: "Qualificação voltada para tecnologia, segurança no trabalho e processos industriais.",
+        tag: "Certificado SENAI"
+      },
+      {
+        id: 3,
+        titulo: "Curso SENAI #3 (Clique para editar)",
+        descricao: "Aperfeiçoamento prático preparando a base para o curso Técnico em Mecânica.",
+        tag: "Certificado SENAI"
+      }
+    ];
+
+    let cursosSenai = JSON.parse(localStorage.getItem('nycolas_cursos_senai')) || cursosPadrao;
+    let cursoEditandoId = null;
+
+    // Função para desenhar os 3 cartões de cursos na tela
+    function renderizarCursos() {
+      const grid = document.getElementById('cursos-grid');
+      grid.innerHTML = '';
+
+      cursosSenai.forEach((curso, index) => {
+        const card = document.createElement('div');
+        card.className = 'rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm hover:shadow-md hover:border-blue-400 dark:hover:border-amber-500/50 transition-all';
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/10 px-2.5 py-1 rounded-lg">
+                <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                Concluído
+              </span>
+              <span class="text-xs font-bold text-slate-400">0${index + 1}</span>
+            </div>
+            <h4 class="font-bold text-lg text-slate-900 dark:text-white leading-snug">${curso.titulo}</h4>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${curso.descricao}</p>
+          </div>
+          <div class="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <span class="text-xs font-semibold text-blue-600 dark:text-amber-400">${curso.tag}</span>
+            <button onclick="abrirModalCurso(${curso.id})" class="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 dark:hover:text-amber-300 transition-colors cursor-pointer">
+              <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+              Editar nome
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      lucide.createIcons();
+    }
+
+    // Funções do Modal de Edição dos Cursos
+    function abrirModalCurso(id) {
+      cursoEditandoId = id;
+      const curso = cursosSenai.find(c => c.id === id);
+      if (!curso) return;
+
+      document.getElementById('input-curso-titulo').value = curso.titulo;
+      document.getElementById('input-curso-desc').value = curso.descricao;
+      
+      const modal = document.getElementById('modal-editar-curso');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function fecharModalCurso() {
+      const modal = document.getElementById('modal-editar-curso');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      cursoEditandoId = null;
+    }
+
+    function salvarCursoEditado() {
+      const novoTitulo = document.getElementById('input-curso-titulo').value.trim();
+      const novaDesc = document.getElementById('input-curso-desc').value.trim();
+
+      if (!novoTitulo) {
+        mostrarMensagem('Atenção', 'Por favor, digite o nome do curso antes de salvar.');
+        return;
+      }
+
+      cursosSenai = cursosSenai.map(c => {
+        if (c.id === cursoEditandoId) {
+          return { ...c, titulo: novoTitulo, descricao: novaDesc || c.descricao };
+        }
+        return c;
+      });
+
+      localStorage.setItem('nycolas_cursos_senai', JSON.stringify(cursosSenai));
+      renderizarCursos();
+      fecharModalCurso();
+      mostrarMensagem('Curso Atualizado!', `"${novoTitulo}" foi salvo no seu portfólio.`);
+    }
+
+    // 3. Sistema de Tema Claro/Escuro inspirado em Harry Potter ("Lumos" e "Nox")
+    function alternarTemaMagico() {
+      const html = document.documentElement;
+      const isDark = html.classList.toggle('dark');
+      const label = document.getElementById('theme-label');
+      const icon = document.getElementById('theme-icon');
+
+      if (isDark) {
+        label.textContent = 'Lumos';
+        icon.setAttribute('data-lucide', 'sun');
+        mostrarMensagem('Nox! 🌑', 'Modo noturno ativado. Clique em "Lumos" para acender a luz!');
+      } else {
+        label.textContent = 'Nox';
+        icon.setAttribute('data-lucide', 'moon');
+        mostrarMensagem('Lumos Maxima! ✨', 'Luz acesa! Modo claro ativado.');
+      }
+
+      lucide.createIcons();
+    }
+
+    // 4. Easter Egg de Harry Potter (Frases aleatórias ao clicar na varinha/pomo de ouro)
+    const frasesMagicas = [
+      '“A felicidade pode ser encontrada mesmo nas horas mais difíceis, se você lembrar de acender a luz.” — Alvo Dumbledore',
+      '“São as nossas escolhas que revelam o que realmente somos, muito mais do que as nossas qualidades.”',
+      '“Juro solenemente não fazer nada de bom!” 🗺️',
+      'Você capturou o Pomo de Ouro! +150 pontos para Nycolas Gabriel! ⚡'
+    ];
+
+    function ativarPomoDeOuro() {
+      const aleatoria = frasesMagicas[Math.floor(Math.random() * frasesMagicas.length)];
+      mostrarMensagem('Magia de Hogwarts ⚡', aleatoria);
+    }
+
+    // 5. Seletor de Casas de Hogwarts no cartão de Harry Potter
+    function selecionarCasa(casa) {
+      document.getElementById('casa-atual').textContent = casa;
+      const mensagensCasas = {
+        'Grifinória': 'Coragem, ousadia e determinação!',
+        'Sonserina': 'Ambição, astúcia e liderança!',
+        'Corvinal': 'Inteligência, criatividade e sabedoria!',
+        'Lufa-Lufa': 'Lealdade, dedicação e jogo limpo!'
+      };
+      mostrarMensagem(`Casa ${casa} selecionada!`, mensagensCasas[casa]);
+    }
+
+    // 6. Menu Mobile
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    // 7. Função de Notificação Visual (Toast)
+    let toastTimeout;
+    function mostrarMensagem(titulo, mensagem) {
+      const toast = document.getElementById('magic-toast');
+      document.getElementById('toast-title').textContent = titulo;
+      document.getElementById('toast-message').textContent = mensagem;
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 4000);
+    }
+
+    // 8. Copiar e-mail para a área de transferência
+    function copiarContato(texto) {
+      const tempInput = document.createElement('input');
+      tempInput.value = texto;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      mostrarMensagem('E-mail Copiado!', `O endereço ${texto} foi copiado (edite no código para colocar seu e-mail real).`);
+    }
+
+    // Inicializa os cursos assim que a página carrega
+    renderizarCursos();
+  </script>
+</body>
+</html>
